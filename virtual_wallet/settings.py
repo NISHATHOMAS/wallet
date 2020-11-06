@@ -12,18 +12,14 @@ SECRET_KEY = '3i_z@g1*^8ia^n(mv-(p**35u+9a7==s_%l8))a(et(meh!b$x'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages', 
-    'django.contrib.staticfiles', 
-    'rest_framework',
+    'django.contrib.admin', 'django.contrib.auth',
+    'django.contrib.contenttypes', 'django.contrib.sessions',
+    'django.contrib.messages', 'django.contrib.staticfiles', 'rest_framework', 'rest_framework.authtoken',
     'walletapp'
 ]
 
@@ -56,9 +52,10 @@ TEMPLATES = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS':
-    'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
 }
 
 WSGI_APPLICATION = 'virtual_wallet.wsgi.application'
@@ -67,9 +64,18 @@ WSGI_APPLICATION = 'virtual_wallet.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    "default": {
+        "NAME": 'wallet',
+        "ENGINE": "django.db.backends.mysql",
+        "USER": 'root',
+        "PASSWORD": 'root',
+        "HOST": '',
+        "PORT": '3306',
+        'CONN_MAX_AGE': 3000,
+        'OPTIONS': {
+            'sql_mode': 'traditional',
+            "autocommit": True
+        }
     }
 }
 
