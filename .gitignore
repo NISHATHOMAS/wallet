@@ -4,3 +4,5 @@
 .pydevproject 
 *.orig 
 env.txt
+.vscode/
+myenv/
