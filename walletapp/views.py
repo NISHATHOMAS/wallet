@@ -133,7 +133,8 @@ class Deposit(APIView):
     def post(self, request, format=None):
         response_dict = {"status": "failure", "data": {}, "msg": ""}
         try:
-            wallet_obj = Wallet.objects.get(customer_xid__user=request.user, is_enabled=True)
+            wallet_obj = Wallet.objects.get(customer_xid__user=request.user,
+                                            is_enabled=True)
         except Exception as e:
             print("Deposit exc: ", e)
             response_dict[
@@ -179,7 +180,8 @@ class Withdraw(APIView):
         try:
             wallet_obj = Wallet.objects.get(
                 customer_xid__user=request.user,
-                balance__gte=request.data["amount"])
+                balance__gte=request.data["amount"],
+                is_enabled=True)
         except Exception as e:
             print("Deposit exc: ", e)
             response_dict[
