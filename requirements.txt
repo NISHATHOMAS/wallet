@@ -1,0 +1,8 @@
+Django==2.2
+djangorestframework==3.12.2
+mysqlclient==2.0.1
+pkg-resources==0.0.0
+Pygments==2.7.2
+pytz==2020.4
+sqlparse==0.4.1
+yapf==0.30.0
