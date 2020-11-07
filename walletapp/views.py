@@ -133,11 +133,11 @@ class Deposit(APIView):
     def post(self, request, format=None):
         response_dict = {"status": "failure", "data": {}, "msg": ""}
         try:
-            wallet_obj = Wallet.objects.get(customer_xid__user=request.user)
+            wallet_obj = Wallet.objects.get(customer_xid__user=request.user, is_enabled=True)
         except Exception as e:
             print("Deposit exc: ", e)
             response_dict[
-                "msg"] = "Either Wallet does not exist or Try with a different 'reference_id'"
+                "msg"] = "Either Wallet not Enabled/ Exist or Try with a different 'reference_id'"
             return Response(response_dict, status=status.HTTP_400_BAD_REQUEST)
         request.data["wallet"] = wallet_obj.id
         serializer = TransactionSerializer(data=request.data)
@@ -162,7 +162,7 @@ class Deposit(APIView):
         else:
             print("Post Error", serializer.errors)
             response_dict[
-                "msg"] = "Either Wallet does not exist or Try with a different 'reference_id'"
+                "msg"] = "Either Wallet not Enabled/ Exist or Try with a different 'reference_id'"
             return Response(response_dict, status=status.HTTP_400_BAD_REQUEST)
         return Response(response_dict, status=status.HTTP_201_CREATED)
 
@@ -183,7 +183,7 @@ class Withdraw(APIView):
         except Exception as e:
             print("Deposit exc: ", e)
             response_dict[
-                "msg"] = "Either Wallet/ Balance does not exist or Try with a different 'reference_id'"
+                "msg"] = "Either Wallet/ Balance does not exist or Wallet Disabled or Try with a different 'reference_id'"
             return Response(response_dict, status=status.HTTP_400_BAD_REQUEST)
         request.data["wallet"] = wallet_obj.id
         print(request.data)
@@ -209,6 +209,6 @@ class Withdraw(APIView):
         else:
             print("Post Error", serializer.errors)
             response_dict[
-                "msg"] = "Either Wallet/ Balance does not exist or Try with a different 'reference_id'"
+                "msg"] = "Either Wallet/ Balance does not exist or Wallet Disabled or Try with a different 'reference_id'"
             return Response(response_dict, status=status.HTTP_400_BAD_REQUEST)
         return Response(response_dict, status=status.HTTP_201_CREATED)
