@@ -68,16 +68,11 @@ WSGI_APPLICATION = 'virtual_wallet.wsgi.application'
 DATABASES = {
     "default": {
         "NAME": 'wallet',
-        "ENGINE": "django.db.backends.mysql",
-        "USER": 'root',
-        "PASSWORD": 'root',
-        "HOST": '',
-        "PORT": '3306',
-        'CONN_MAX_AGE': 3000,
-        'OPTIONS': {
-            'sql_mode': 'traditional',
-            "autocommit": True
-        }
+        "ENGINE": "django.db.backends.postgresql",
+        "USER": 'yjojzezzgetatq',
+        "PASSWORD": '2c9208654592f129ed88e6a1ff78e77b4dd7f08927dfd5b15a1335c2c62915cb',
+        "HOST": 'ec2-34-193-117-204.compute-1.amazonaws.com',
+        "PORT": '5432'        
     }
 }
 
