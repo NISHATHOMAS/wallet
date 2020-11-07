@@ -22,7 +22,7 @@ class Customer(models.Model):
 class Wallet(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     customer_xid = models.OneToOneField(Customer, on_delete=models.CASCADE)
-    is_enabled = models.BooleanField(default=False)
+    is_enabled = models.BooleanField(default=True)
     balance = models.DecimalField(default=0.00, max_digits=5, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     enabled_at = models.DateTimeField(auto_now=True)
