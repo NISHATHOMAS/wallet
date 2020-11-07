@@ -13,7 +13,10 @@ class WalletSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Wallet
-        fields = ['id', 'customer_xid', 'is_enabled', 'enabled_at','balance', 'owned_by']
+        fields = [
+            'id', 'customer_xid', 'is_enabled', 'enabled_at', 'balance',
+            'owned_by'
+        ]
 
     def get_owned_by(self, obj):
         return str(obj.customer_xid.id)
@@ -31,4 +34,4 @@ class WalletSerializer(serializers.ModelSerializer):
 class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
-        fields = ['id']
+        fields = '__all__'

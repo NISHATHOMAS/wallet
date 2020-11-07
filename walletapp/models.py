@@ -32,7 +32,7 @@ class Transaction(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
     amount = models.DecimalField(default=0.00, max_digits=5, decimal_places=2)
-    reference_id = models.UUIDField(default=uuid.uuid4, editable=False)
+    reference_id = models.UUIDField(unique=True)
     txn_type = models.IntegerField(default=1, choices=TRANSACTION_TYPE)
     status = models.IntegerField(default=1, choices=TRANSACTION_STATUS)
     created_at = models.DateTimeField(auto_now_add=True)
