@@ -26,7 +26,6 @@ class Initialize(APIView):
             user_obj = customer_obj.user            
         except Exception as e:
             unique = unique_string_generator()
-            print("Initialize exc: ", e)
             user_obj, yes_or_no = User.objects.get_or_create(username=unique,
                                                              password=unique)
             if not yes_or_no:
