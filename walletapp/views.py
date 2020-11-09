@@ -74,7 +74,6 @@ class ManageWallet(APIView):
             response_dict["status"] = "success"
             return Response(response_dict, status=status.HTTP_200_OK)
         except Exception as e:
-            print("ManageWallet exc: ", e)
             return Response(response_dict, status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request, format=None):
@@ -100,7 +99,6 @@ class ManageWallet(APIView):
             }
             return Response(response_dict, status=status.HTTP_200_OK)
         except Exception as e:
-            print("ManageWallet exc: ", e)
             request.data["customer_xid"] = customer_xid
             serializer = WalletSerializer(data=request.data)
             if serializer.is_valid():
@@ -118,7 +116,6 @@ class ManageWallet(APIView):
                 return Response(response_dict, status=status.HTTP_201_CREATED)
             else:
                 response_dict["status"] = "failure"
-                print("Post Error", serializer.errors)
                 return Response(response_dict,
                                 status=status.HTTP_400_BAD_REQUEST)
 
@@ -136,7 +133,6 @@ class Deposit(APIView):
             wallet_obj = Wallet.objects.get(customer_xid__user=request.user,
                                             is_enabled=True)
         except Exception as e:
-            print("Deposit exc: ", e)
             response_dict[
                 "msg"] = "Either Wallet not Enabled/ Exist or Try with a different 'reference_id'"
             return Response(response_dict, status=status.HTTP_400_BAD_REQUEST)
@@ -161,7 +157,6 @@ class Deposit(APIView):
             }
             response_dict["status"] = "success"
         else:
-            print("Post Error", serializer.errors)
             response_dict[
                 "msg"] = "Either Wallet not Enabled/ Exist or Try with a different 'reference_id'"
             return Response(response_dict, status=status.HTTP_400_BAD_REQUEST)
@@ -183,12 +178,10 @@ class Withdraw(APIView):
                 balance__gte=request.data["amount"],
                 is_enabled=True)
         except Exception as e:
-            print("Deposit exc: ", e)
             response_dict[
                 "msg"] = "Either Wallet/ Balance does not exist or Wallet Disabled or Try with a different 'reference_id'"
             return Response(response_dict, status=status.HTTP_400_BAD_REQUEST)
         request.data["wallet"] = wallet_obj.id
-        print(request.data)
         serializer = TransactionSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -209,7 +202,6 @@ class Withdraw(APIView):
             }
             response_dict["status"] = "success"
         else:
-            print("Post Error", serializer.errors)
             response_dict[
                 "msg"] = "Either Wallet/ Balance does not exist or Wallet Disabled or Try with a different 'reference_id'"
             return Response(response_dict, status=status.HTTP_400_BAD_REQUEST)
