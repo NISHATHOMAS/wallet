@@ -1,7 +1,8 @@
 from django.db.models import fields
 from walletapp.models import Customer, Wallet
 from walletapp.serializers import WalletSerializer, TransactionSerializer
-from django.http import Http404
+from django.db import transaction
+from django.db import IntegrityError
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authentication import (
@@ -138,27 +139,32 @@ class Deposit(APIView):
             return Response(response_dict, status=status.HTTP_400_BAD_REQUEST)
         request.data["wallet"] = wallet_obj.id
         serializer = TransactionSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            old_balance = float(wallet_obj.balance)
-            new_balance = old_balance + float(serializer.data["amount"])
-            wallet_obj.balance = new_balance
-            wallet_obj.save()
-            txn_data = serializer.data
-            response_dict["data"] = {
-                "deposit": {
-                    "id": txn_data.pop("id"),
-                    "deposited_by": wallet_obj.customer_xid.id,
-                    "status": "success",
-                    "deposited_at": txn_data.pop("transacted_at"),
-                    "amount": serializer.data["amount"],
-                    "reference_id": txn_data.pop("reference_id")
-                }
-            }
-            response_dict["status"] = "success"
-        else:
-            response_dict[
-                "msg"] = "Either Wallet not Enabled/ Exist or Try with a different 'reference_id'"
+        try:
+            with transaction.atomic():
+                if serializer.is_valid():
+                    serializer.save()
+                    old_balance = float(wallet_obj.balance)
+                    new_balance = old_balance + float(serializer.data["amount"])
+                    wallet_obj.balance = new_balance
+                    wallet_obj.save()
+                    txn_data = serializer.data
+                    response_dict["data"] = {
+                        "deposit": {
+                            "id": txn_data.pop("id"),
+                            "deposited_by": wallet_obj.customer_xid.id,
+                            "status": "success",
+                            "deposited_at": txn_data.pop("transacted_at"),
+                            "amount": serializer.data["amount"],
+                            "reference_id": txn_data.pop("reference_id")
+                        }
+                    }
+                    response_dict["status"] = "success"
+                else:
+                    response_dict[
+                        "msg"] = "Either Wallet not Enabled/ Exist or Try with a different 'reference_id'"
+                    return Response(response_dict, status=status.HTTP_400_BAD_REQUEST)
+        except IntegrityError:
+            response_dict["msg"] = "Transaction failed"
             return Response(response_dict, status=status.HTTP_400_BAD_REQUEST)
         return Response(response_dict, status=status.HTTP_201_CREATED)
 
@@ -183,26 +189,31 @@ class Withdraw(APIView):
             return Response(response_dict, status=status.HTTP_400_BAD_REQUEST)
         request.data["wallet"] = wallet_obj.id
         serializer = TransactionSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            old_balance = float(wallet_obj.balance)
-            new_balance = old_balance - float(serializer.data["amount"])
-            wallet_obj.balance = new_balance
-            wallet_obj.save()
-            txn_data = serializer.data
-            response_dict["data"] = {
-                "deposit": {
-                    "id": txn_data.pop("id"),
-                    "withdrawn_by": wallet_obj.customer_xid.id,
-                    "status": "success",
-                    "withdrawn_at": txn_data.pop("transacted_at"),
-                    "amount": serializer.data["amount"],
-                    "reference_id": txn_data.pop("reference_id")
-                }
-            }
-            response_dict["status"] = "success"
-        else:
-            response_dict[
-                "msg"] = "Either Wallet/ Balance does not exist or Wallet Disabled or Try with a different 'reference_id'"
+        try:
+            with transaction.atomic():
+                if serializer.is_valid():
+                    serializer.save()
+                    old_balance = float(wallet_obj.balance)
+                    new_balance = old_balance - float(serializer.data["amount"])
+                    wallet_obj.balance = new_balance
+                    wallet_obj.save()
+                    txn_data = serializer.data
+                    response_dict["data"] = {
+                        "deposit": {
+                            "id": txn_data.pop("id"),
+                            "withdrawn_by": wallet_obj.customer_xid.id,
+                            "status": "success",
+                            "withdrawn_at": txn_data.pop("transacted_at"),
+                            "amount": serializer.data["amount"],
+                            "reference_id": txn_data.pop("reference_id")
+                        }
+                    }
+                    response_dict["status"] = "success"
+                else:
+                    response_dict[
+                        "msg"] = "Either Wallet/ Balance does not exist or Wallet Disabled or Try with a different 'reference_id'"
+                    return Response(response_dict, status=status.HTTP_400_BAD_REQUEST)
+        except IntegrityError:
+            response_dict["msg"] = "Transaction failed"
             return Response(response_dict, status=status.HTTP_400_BAD_REQUEST)
         return Response(response_dict, status=status.HTTP_201_CREATED)

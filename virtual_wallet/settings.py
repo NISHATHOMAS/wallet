@@ -21,8 +21,8 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'django.contrib.admin', 'django.contrib.auth',
     'django.contrib.contenttypes', 'django.contrib.sessions',
-    'django.contrib.messages', 'django.contrib.staticfiles', 'rest_framework', 'rest_framework.authtoken',
-    'walletapp'
+    'django.contrib.messages', 'django.contrib.staticfiles', 'rest_framework',
+    'rest_framework.authtoken', 'walletapp'
 ]
 
 MIDDLEWARE = [
@@ -70,10 +70,27 @@ DATABASES = {
         "NAME": 'wallet',
         "ENGINE": "django.db.backends.postgresql",
         "USER": 'yjojzezzgetatq',
-        "PASSWORD": '2c9208654592f129ed88e6a1ff78e77b4dd7f08927dfd5b15a1335c2c62915cb',
+        "PASSWORD":
+        '2c9208654592f129ed88e6a1ff78e77b4dd7f08927dfd5b15a1335c2c62915cb',
         "HOST": 'ec2-34-193-117-204.compute-1.amazonaws.com',
-        "PORT": '5432'        
+        "PORT": '5432',
+        'ATOMIC_REQUEST': True,
+        'OPTIONS': {
+            "autocommit": False
+        }
     }
+    # "default": {
+    #     "NAME": 'wallet',
+    #     "ENGINE": "django.db.backends.mysql",
+    #     "USER": 'root',
+    #     "PASSWORD": 'root',
+    #     "HOST": '',
+    #     "PORT": '3306',
+    #     'ATOMIC_REQUEST': True,
+    #     'OPTIONS': {
+    #         "autocommit": False
+    #     }
+    # }
 }
 
 # Password validation
@@ -111,8 +128,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 
 django_heroku.settings(locals())
@@ -121,12 +136,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATIC_URL = "/static/"
 
 # Extra places for collectstatic to find static files.
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"), )
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATIC_URL = "/static/"
 
 # Extra places for collectstatic to find static files.
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"), )
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
